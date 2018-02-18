@@ -1,0 +1,26 @@
+#!/usr/bin/perl
+
+use strict;
+
+my $i;
+
+#for ($i=0; $i <= 9; $i++) {
+	print "$i\n";
+	my $fileToread = "11.adj";
+	#my $status = system("cat 1024.adj | more");
+  my $hash = -s $fileToread;
+	print "Size of a file is ${hash} \n";
+	my $size = 0;
+	my $fileTowrite = 1;
+	#while ($size <= $hash){
+	$size = $size + 41;
+	my $temp = "$fileTowrite";
+	my $Block = $fileTowrite - 1;
+	my $status = system("dd if=${fileToread} skip=${Block} count=1 ibs=41 obs=41 of=./output/${temp}.adj");
+	my $Hash = `dd if=${fileToread} skip=${Block} count=1 ibs=41 | ipfs add`;
+	print "$Hash";
+ 	#$fileTowrite = $fileTowrite +1;
+	#print "${status}";
+#}
+  # print " and the hash is ${hash}\n";
+#}
