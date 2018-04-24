@@ -2,8 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
-	<classpathentry kind="lib" path="/home/shirish/Desktop/java-json.jar.zip"/>
-	<classpathentry kind="lib" path="/home/shirish/Desktop/org.json-20120521.jar"/>
-	<classpathentry kind="lib" path="/home/shirish/Desktop/json-simple-1.1.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/shiri/git/IPFS_Git/CourseIPFS/Data_Handler/json-simple-1.1.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
