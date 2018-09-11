@@ -1,56 +1,65 @@
 import os
+import random
 import subprocess
 from subprocess import call
 from subprocess import check_call
 import pprint
-def generateData(col,row,Dimention):
+def generateData(col,row):
 
 	# print row, col
-	pathToFile = "/home/shirish/Data_Files/IPFS_Data/DB"
-	Count = 0
+	pathToFile = "/home/sbot/DataFiles/IPFSDATA/DB"
+	fileName = pathToFile + "/"+ "master.txt"
+	print fileName
+	count = 0
+	fileToWrite = open(fileName,"w")
 	for r in range(0,row):
+		temp = ""
 		for c in range(0,col):
-	        	fileName = pathToFile + "/" + str(Count) + ".txt"
-	        	print fileName
-	        	try:
-	        		fileToWrite = open(fileName,"w")
-	        		for i in range (0,Dimention):
-	        			for j in range(0,Dimention):
-	                    			fileToWrite.write(str(Count))
-	                		fileToWrite.write("\n")
-	            		Count += 1
-				try:
-					fileToWrite.close()
-				except Exception as e:
-					print e
-	        	except Exception as e:
-	            		print e
-
-
-def addData(col,row,Dimention):
+			# temp+=str(random.randint(0,1))
+			a = count
+			temp+=str(a)
+		count += 1
+		# print tem
+		fileToWrite.write(temp+"\n")
 	try:
-		path = "/home/shirish/Data_Files/IPFS_Data/DB/"
-		fileList = subprocess.check_output(['ls','/home/shirish/Data_Files/IPFS_Data/DB/'])
+		fileToWrite.close()
+	except Exception as e:
+		print e
+def addDataV1(noOfBlocks):
+	fileName ="/home/sbot/DataFiles/IPFSDATA/DB/master.txt"
+	count = 0
+	fileToRead = open(fileName,"r")
+	data = fileToRead.readlines()
+	noOfLines = len(data)
+	print "Total No Of lines are "+str(noOfLines)
+
+	fileToRead.close()
+
+def addData(col,row,noOfBlocks):
+	try:
+		path = "/home/sbot/DataFiles/IPFSDATA/DB"
+		print "Path to get Files is: " + path
+		fileList = subprocess.check_output(['ls',path])
+
 		pp = pprint.PrettyPrinter(indent=4)
 		print "Files are:	\n",fileList
 		fileList = fileList.split("\n")
 		fileList = fileList[0:len(fileList)-1]
-		jsonFile = open("/home/shirish/Data_Files/IPFS_Data/DB.json","w")
+		print fileList
+		jsonFile = open(path+"/DB.json","w")
 		dimn = "{\n"
 		dimn = dimn + '\t"'+"Dimention"+'"'+": {\n"
-		dimn = dimn +'\t\t"'+"No_Of_Columns"+'" :'+str(col)+",\n"
-		dimn = dimn + '\t\t"'+"No_Of_Rows"+'" :'+str(row)+",\n"
-		dimn = dimn + '\t\t"'+"Total_Blocks"+'" :'+str(Dimention)+"\n"
+		dimn = dimn + '\t\t"'+"Total_Blocks"+'" :'+str(col*row)+"\n"
 		dimn = dimn + "\t},\n"
 		print dimn
 		jsonFile.write(dimn)
 		#Now goes the Actual list of IPFS
 		block_List = '\t"'+"Blocks"+'"'+": {\n"
 		jsonFile.write(block_List)
-		print block_List 
+		print block_List
 		for i in range(0, len(fileList)):
 			fileName = fileList[i]
-			fileToAdd = path + fileName			
+			fileToAdd = path +"/"+ fileName
 			IPFS_Hash = subprocess.check_output(['ipfs','add',fileToAdd])
 			IPFS_Hash = IPFS_Hash.split()
 			#print IPFS_Hash[1]
@@ -74,9 +83,9 @@ def addData(col,row,Dimention):
 def main():
 	col = int(raw_input("enter No Of Columns:   "))
 	row = int(raw_input("ENter No of Rows:  "))
-	Dimention = int(raw_input("Enter Dimention for each block to generate:  "))
-	generateData(col,row,Dimention)
-	addData(col,row,Dimention)
+	# noOfBlocks = int(raw_input("Enter noOfBlocks for each block to generate:  "))
+	generateData(col,row)
+	# addDataV1(5)
 
 
 if __name__ == "__main__":
