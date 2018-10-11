@@ -6,7 +6,7 @@ import java.util.Scanner;
 public class Driver{
   public static void main(String[] args){
       //System.out.println("Hii I am inside print");
-      String IPFSHash = "SomeString";
+      String ipfsHash = "SomeString";
       Scanner inFromKey = new Scanner(System.in);
       System.out.println("You want to run serial version or parallel...?");
       String input = null;
@@ -17,10 +17,14 @@ public class Driver{
       System.out.println("You have Chosen to go With "+input);
       if (input.equals(Integer.toString(1))){
         System.out.println("You are in Serial Version....");
+        get_Data_in_Serial(ipfsHash);
       }
       else {
         System.out.println("You are in Parallel Version");
       }
+  }
 
+  public static void get_Data_in_Serial(String ipfsHash){
+    System.out.println("Getting Data in Serial with Hash:" + ipfsHash);
   }
 }

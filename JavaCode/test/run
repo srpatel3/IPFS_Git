@@ -1,0 +1,5 @@
+javac Driver.java
+
+java Driver
+
+rm -f *.class
