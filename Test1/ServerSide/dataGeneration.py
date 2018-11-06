@@ -38,7 +38,7 @@ def generateFiles(totalFiles):
 		# print res
 		blockInfo['hash'] = res['Key']
 		blockInfo['count'] = count
-		block[1] = blockInfo
+		block[i] = blockInfo
 		blockList.append(block)
 	finalDict["blockList"] = blockList
 	
