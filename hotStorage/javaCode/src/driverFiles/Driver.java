@@ -11,6 +11,10 @@ import org.json.simple.parser.*;
 import java.util.Iterator;
 
 public class Driver{
+
+	// This arrayList could probably be replaced by another (faster) data structure such as
+	// the span-space algorithm (http://web.cse.ohio-state.edu/~shen.94/papers/Shen1996.pdf)
+	
   public  static ArrayList<ScreeningNode> screeningArray = new ArrayList<>();
   public static HashMap<String, DataSlice> lookupTable = new HashMap<String, DataSlice>();
   public static void main(String[] Args){
@@ -57,7 +61,7 @@ public class Driver{
 //     System.out.println(hash);
 //   }
 // }
-
+					//range()
 public static void getDatums(int min, int max){
   ArrayList<String> sliceHashes = getInRangeSlices(min, max);
   ArrayList<String> hashesToGet = new ArrayList<>();
@@ -67,8 +71,29 @@ public static void getDatums(int min, int max){
   for(String hash : hashesToGet){
     System.out.println(hash);
   }
+  
+  
+  
+  // return a DataBlock [] 
   // return hashesToGet;
 }
+
+
+/** Retrieve a geometric subset of a data slice. Currently, we restrict the
+ *  implementation to handle only bounds that align exactly with block boundaries.
+	@param b the ISBounds specifying the subregion to retrieve data for.
+	@returns the DataBlock containing the requested data.
+*/
+public static DataBlock subblock(ISBounds b){
+
+
+
+}
+
+
+
+
+
 
 
   public static void updateInformation(String dag, String hash){

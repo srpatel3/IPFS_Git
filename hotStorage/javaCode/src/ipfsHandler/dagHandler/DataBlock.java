@@ -4,6 +4,9 @@ public class DataBlock{
   private int min;
   private int max;
   private int dataBlockNumber;
+  
+  // private ISBounds bounds;  // records both shape and position
+  
   private String path; // path starts with hash
 
   // Constructor
@@ -34,6 +37,8 @@ public class DataBlock{
   public int getNum(){
     return this.dataBlockNumber;
   }
+  
+  // public float (or int for now)  getDatum(int row, int column);
 
   public String getHash(){
     return this.path;
