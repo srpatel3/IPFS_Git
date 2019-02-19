@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class DataBlock{
   private int min;
   private int max;
@@ -13,7 +15,29 @@ public class DataBlock{
   }
 
 
+  public boolean isInRange(int min, int max){
+    if (min >= this.getMin() && max <= this.getMax()){
+      return true;
+    } else{
+      return false;
+    }
+  }
 
+  public int getMin(){
+    return this.min;
+  }
+
+  public int getMax(){
+    return this.max;
+  }
+
+  public int getNum(){
+    return this.dataBlockNumber;
+  }
+
+  public String getHash(){
+    return this.path;
+  }
 
   public String toString() {
     String tempString = "\t\t\t number : "+this.dataBlockNumber+"\n\t\t\t min : "+this.min+"\n\t\t\t max : "+this.max+"\n\t\t\t path : "+this.path + "\n";

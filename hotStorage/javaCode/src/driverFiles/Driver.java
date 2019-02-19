@@ -23,12 +23,53 @@ public class Driver{
     int input = 0;
     // genDag();
     while (input !=5){
-      System.out.println("What do you want to do next :");
+      System.out.println("Enter Min : ");
+      int min = inFromKey.nextInt();
+      System.out.println("Enter Max : ");
+      int max = inFromKey.nextInt();
+      ArrayList<String> inRangeSlices = getInRangeSlices(min, max);
+      System.out.println("What do you want to do?");
       input = inFromKey.nextInt();
-      printList();
+      // printList(inRangeSlices);
+      getDatums(min, max);
     }
 
   }
+
+
+ public static ArrayList<String> getInRangeSlices(int min, int max){
+   ArrayList<String> tempList = new ArrayList<>();
+   for(ScreeningNode tempNode : screeningArray){
+     if (tempNode.isInRange(min, max)){
+       tempList.add(tempNode.getHash());
+     }
+   }
+   return tempList;
+ }
+
+// public static void getDataSections(int min, int max){
+//   ArrayList<String> sliceHashes = getInRangeSlices(min, max);
+//   ArrayList<String> hashesToGet = new ArrayList<>();
+//   for(String hash : sliceHashes){
+//       hashesToGet.addAll(lookupTable.get(hash).getDataSections(min, max));
+//   }
+//   for(String hash : hashesToGet){
+//     System.out.println(hash);
+//   }
+// }
+
+public static void getDatums(int min, int max){
+  ArrayList<String> sliceHashes = getInRangeSlices(min, max);
+  ArrayList<String> hashesToGet = new ArrayList<>();
+  for(String hash : sliceHashes){
+      hashesToGet.addAll(lookupTable.get(hash).getDatums(min, max));
+  }
+  for(String hash : hashesToGet){
+    System.out.println(hash);
+  }
+  // return hashesToGet;
+}
+
 
   public static void updateInformation(String dag, String hash){
     // System.out.println(dag);
@@ -97,11 +138,12 @@ public class Driver{
     }
   }
 
-  public static void printList(){
-    for(ScreeningNode item : screeningArray){
+  public static void printList(ArrayList<String> inRangeSlices){
+    // for(ScreeningNode item : screeningArray){
+    for (String hash : inRangeSlices){
       // System.out.println(item.toString());
-      String hash = item.getHash();
-      System.out.println(lookupTable.getHash(hash).toString());
+      // String hash = item.getHash();
+      System.out.println(lookupTable.get(hash).toString());
     }
   }
 }

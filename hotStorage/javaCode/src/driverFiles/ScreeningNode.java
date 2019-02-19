@@ -10,17 +10,24 @@ public class ScreeningNode{
       this.hash = hash;
     }
 
-    public boolean isInRange(int min, int max){
-      if ((this.min <= min) && (this.max >= max)){
-        return true;
-      }
-      else{
-        return false;
-      }
-    }
-
     public String getHash(){
       return this.hash;
+    }
+
+    public int getMin(){
+      return this.min;
+    }
+
+    public int getMax(){
+      return this.max;
+    }
+
+    public boolean isInRange(int min, int max){
+      if (min >= this.getMin() && max <= this.getMax()){
+        return true;
+      } else{
+        return false;
+      }
     }
 
     public String toString(){

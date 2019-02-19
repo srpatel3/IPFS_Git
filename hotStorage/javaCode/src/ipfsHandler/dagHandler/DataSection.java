@@ -18,6 +18,38 @@ public class DataSection{
   public void addDataBlock(int dataBlockIndex, DataBlock obj){
     this.dataBlockList[dataBlockIndex] = obj;
   }
+
+  public ArrayList<String> getDatums(int min, int max){
+    ArrayList<String> tempList = new ArrayList<>();
+    for(int i =0; i<4 && this.dataBlockList[i] != null; i++){
+      if(this.dataBlockList[i].isInRange(min, max)){
+        tempList.add(this.dataBlockList[i].getHash());
+      }
+    }
+    return tempList;
+  }
+
+  public boolean isInRange(int min, int max){
+    if (min >= this.getMin() && max <= this.getMax()){
+      return true;
+    } else{
+      return false;
+    }
+  }
+
+  public int getMin(){
+    return this.min;
+  }
+
+  public int getMax(){
+    return this.max;
+  }
+
+  public int getNum(){
+    return this.dataSectionNumber;
+  }
+
+
   public String toString(){
     String tempString = "\t\t min : "+this.min+"\n\t\t max : "+this.max+"\n\t\t number : "+this.dataSectionNumber+"\n";
     for(int i =0; i<4 && this.dataBlockList[i] != null; i++){

@@ -23,7 +23,7 @@ public class RemoteConnector implements Runnable{
 	public void run(){
 		try{
 			System.out.println("Inside Thread");
-			while(true) {
+			while(this.flag) {
   			Socket connectionSocket = this.socket.accept();
 				System.out.println("Now Waiting for Client");
         BufferedReader inFromClient = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
