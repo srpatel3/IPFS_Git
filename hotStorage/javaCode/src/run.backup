@@ -1,0 +1,45 @@
+ipfsPATH="/home/sbot/git/IPFS_Git/hotStorage/javaCode/src/ipfsHandler/"
+driverPATH="/home/sbot/git/IPFS_Git/hotStorage/javaCode/src/driverFiles/"
+remotePATH="/home/sbot/git/IPFS_Git/hotStorage/javaCode/src/remoteHandler/"
+
+echo "Removin previous class files if any"
+
+# ls $ipfsPATH | grep *.class
+
+out=$(find $driverPATH -type f -name "*.class")
+
+if [ $out ]; 
+then
+	echo "Cleared ipfsPATH"
+else
+	echo "No class files in ipfsPATH"
+fi
+
+
+ls $driverPATH | grep *.class
+
+if [ $? -eq 0 ];
+then
+        echo "Cleared driverPATH"
+else
+        echo "No class files in driverPATH"
+fi
+
+
+ls $remotePATH | grep *.class
+
+if [ $? -eq 0 ];
+then
+        echo "Cleared remotePATH"
+else
+        echo "No class files in remotePATH"
+fi
+
+
+echo "Compiling java Code"
+
+# javac $driverPATH/*.java $remotePATH/*.java
+
+echo "Running Program"
+
+# java -cp ".:$ipfsPATH:$driverPATH:$remotePATH" Driver

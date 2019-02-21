@@ -1,0 +1,14 @@
+ipfsPATH="/home/sbot/git/IPFS_Git/hotStorage/javaCode/src/ipfsHandler/"
+dagPATH="/home/sbot/git/IPFS_Git/hotStorage/javaCode/src/ipfsHandler/dagHandler/"
+driverPATH="/home/sbot/git/IPFS_Git/hotStorage/javaCode/src/driverFiles/"
+remotePATH="/home/sbot/git/IPFS_Git/hotStorage/javaCode/src/remoteHandler/"
+
+jarFile="/home/sbot/git/IPFS_Git/hotStorage/javaCode/jar/"
+
+rm $ipfsPATH*.class
+rm $driverPATH*.class
+rm $remotePATH*.class
+
+javac -cp ".:$jarFile/*:" $driverPATH/*.java $ipfsPATH/*.java $dagPATH/*.java $remotePATH/*.java
+
+java -cp ".:$jarFile/*:$ipfsPATH:$driverPATH:$remotePATH:$dagPATH:" Driver
