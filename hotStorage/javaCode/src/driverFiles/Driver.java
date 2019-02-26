@@ -26,7 +26,8 @@ public class Driver{
     System.out.println("In Main method");
     System.out.println("Now Starting Thread");
     // Make sure to uncomment this lines as this will get us the list of dag
-    Thread connector = new Thread(new RemoteConnector());
+    RemoteConnector RMC = new RemoteConnector();
+    Thread connector = new Thread(RMC);
     connector.start();
     Scanner inFromKey = new Scanner(System.in);
     int input = 0;
@@ -41,10 +42,11 @@ public class Driver{
       Getter getterObject = new Getter();
       getterObject.getInRange(Bounds);
       System.out.println("What do you want to do?");
+      // getInRange(Bounds);
       input = inFromKey.nextInt();
       // printList(inRangeSlices);
-      // getInRange(Bounds);
     }
+    System.exit(0);
 
   }
 

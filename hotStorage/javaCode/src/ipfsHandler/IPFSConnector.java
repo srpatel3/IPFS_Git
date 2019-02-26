@@ -34,8 +34,10 @@ public class IPFSConnector{
   }
 
   public byte[] getFile(String hash) throws IOException{
+    System.out.println("Trying to get file : "+hash);
     Multihash filePointer = Multihash.fromBase58(hash);
     byte[] fileContents = this.ipfs.cat(filePointer);
+    System.out.println("Done Fetching File");
     return fileContents;
   }
 

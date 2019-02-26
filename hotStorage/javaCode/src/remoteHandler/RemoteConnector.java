@@ -20,6 +20,10 @@ public class RemoteConnector implements Runnable{
 
 	}
 
+	public void updateFlag(){
+		this.flag = false;
+	}
+
 	public void run(){
 		try{
 			System.out.println("Inside Thread");
@@ -27,16 +31,20 @@ public class RemoteConnector implements Runnable{
   			Socket connectionSocket = this.socket.accept();
 				// System.out.println("Now Waiting for Client");
         BufferedReader inFromClient = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
-        String hashFromClient = inFromClient.readLine();
-				// System.out.println(hashFromClient);
-				// System.out.println("Hash Received from Client");
-				Driver.updateInformation(ipfsCon.getDag(hashFromClient),hashFromClient);
-				// Driver.strArray.add(hashFromClient);
+				String hashFromClient;
+				while ((hashFromClient = inFromClient.readLine())!= null){
+					 // inFromClient.readLine();
+					// System.out.println(hashFromClient);
+					// System.out.println("Hash Received from Client");
+					Driver.updateInformation(ipfsCon.getDag(hashFromClient),hashFromClient);
+					// Driver.strArray.add(hashFromClient);
+				}
+
         }
-				// System.exit();
 		}
 		catch(Exception e){
 
 		}
+			// System.exit(0);
 	}
 }

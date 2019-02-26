@@ -21,6 +21,7 @@ def getDataBlockList(dataSectionPath, api):
             gMin = min(metaNumber, metaNumber1, gMin)
             gMax = max(metaNumber, metaNumber1, gMax)
             res = api.add(dataBlockPath)
+	    print res
             dataBlockInfo['number'] = str(i)
             dataBlockInfo['hash'] = res['Hash']
             dataBlockList.append(dataBlockInfo)
@@ -60,10 +61,14 @@ def addDataSlice(slicePath, sliceNumber):
     return sliceInfo
 
 def main():
-    slicePath = "/home/sbot/dataDir/hotStorage/SLICE_0"
-    print "Entering Folder : " + slicePath+"/"+"SLICE_0"
-    with open("dag1.json","w") as fileToWrite:
-        # addDataSlice takes in two parameter path of SLICE dir and sliceNumber
-        json.dump(addDataSlice(slicePath, 0), fileToWrite)
+    slicePath = "/home/sbot/dataDir/hotStorage/SLICE_"
+    dagFile = "/home/sbot/dataDir/DAG/dag_"
+    for i in range(0,20):
+	tempPath = slicePath+str(i)
+	tempDag = dagFile+str(i)+".json"
+    	print "Entering Folder : " + slicePath+"/"+"SLICE_"+str(i)
+    	with open(tempDag,"w") as fileToWrite:
+        	# addDataSlice takes in two parameter path of SLICE dir and sliceNumber
+        	json.dump(addDataSlice(tempPath, i), fileToWrite)
 if __name__ == "__main__":
     main()

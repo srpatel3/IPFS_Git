@@ -10,6 +10,7 @@ public class Task implements Runnable{
 
   public void run(){
     try{
+        // System.out.println("Getting : "+this.hash);
         byte[] data = ipfs_con.getFile(this.hash);
         String[] strArray = (new String(data)).split("\n");
         int sum = 0;
@@ -25,6 +26,8 @@ public class Task implements Runnable{
     catch(IOException e){
       e.printStackTrace();
     }
+    // System.out.println("Done with : "+this.hash);
+    // System.exit(0);
   }
 
   public String getHash(){
