@@ -46,6 +46,7 @@ public class DataSlice{
 	return this.path;
   }
 
+  // get list of blocks within range
   public ArrayList<String> getDatums(int min, int max){
     ArrayList<String> tempList = new ArrayList<>();
     for(int i =0; i<4 && this.dataSectionList[i] != null; i++){

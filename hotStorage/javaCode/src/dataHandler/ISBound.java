@@ -1,9 +1,9 @@
-public class ISOBound{
+public class ISBound{
   private int sBound;
-  private int eBount;
+  private int eBound;
 
   // Constructor
-  public ISOBound(int sBound, int eBound){
+  public ISBound(int sBound, int eBound){
     this.sBound = sBound;
     this.eBound = eBound;
   }

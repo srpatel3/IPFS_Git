@@ -36,7 +36,7 @@ def getDataSectionList(slicePath,api):
     for i in range(0,4):
         dataSectionInfo = dict()
         # Will have to change it to i
-        dataSectionPath = slicePath+"/"+"BLOCK_"+str(0)
+        dataSectionPath = slicePath+"/"+"BLOCK_"+str(i)
         dataBlockList, min, max = getDataBlockList(dataSectionPath, api)
         dataSectionInfo["number"] = str(i)
         dataSectionInfo["dataBlockList"] = dataBlockList

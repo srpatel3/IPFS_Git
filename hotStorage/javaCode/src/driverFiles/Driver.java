@@ -15,8 +15,13 @@ public class Driver{
 	// This arrayList could probably be replaced by another (faster) data structure such as
 	// the span-space algorithm (http://web.cse.ohio-state.edu/~shen.94/papers/Shen1996.pdf)
 
+  // To screen result
   public  static ArrayList<ScreeningNode> screeningArray = new ArrayList<>();
+  // To Maintain hash to dag relationship
   public static HashMap<String, DataSlice> lookupTable = new HashMap<String, DataSlice>();
+  // To store calculated result
+  public static HashMap<String, Integer> resultTable = new HashMap<String, Integer>();
+
   public static void main(String[] Args){
     System.out.println("In Main method");
     System.out.println("Now Starting Thread");
@@ -31,26 +36,20 @@ public class Driver{
       int fInput = inFromKey.nextInt();
       System.out.println("Enter Max : ");
       int sInput = inFromKey.nextInt();
-			ISBounds Bounds = new ISBounds(fInput, sInput);
+			ISBound Bounds = new ISBound(fInput, sInput);
       // ArrayList<String> inRangeSlices = getInRangeSlices(Bounds);
+      Getter getterObject = new Getter();
+      getterObject.getInRange(Bounds);
       System.out.println("What do you want to do?");
       input = inFromKey.nextInt();
       // printList(inRangeSlices);
-      getInRange(Bounds);
+      // getInRange(Bounds);
     }
 
   }
 
 
- public static ArrayList<String> getInRangeSlices(int min, int max){
-   ArrayList<String> tempList = new ArrayList<>();
-   for(ScreeningNode tempNode : screeningArray){
-     if (tempNode.isInRange(min, max)){
-       tempList.add(tempNode.getHash());
-     }
-   }
-   return tempList;
- }
+
 
 // public static void getDataSections(int min, int max){
 //   ArrayList<String> sliceHashes = getInRangeSlices(min, max);
@@ -63,23 +62,6 @@ public class Driver{
 //   }
 // }
 					//range()
-public static void getInRange(ISBounds b){
-	int min = b.get_sBound();
-	int max = b.get_eBound();
-  ArrayList<String> sliceHashes = getInRangeSlices(min, max);
-  ArrayList<String> hashesToGet = new ArrayList<>();
-  for(String hash : sliceHashes){
-      hashesToGet.addAll(lookupTable.get(hash).getDatums(min, max));
-  }
-  for(String hash : hashesToGet){
-    System.out.println(hash);
-  }
-
-
-
-  // return a DataBlock []
-  // return hashesToGet;
-}
 
 
 /** Retrieve a geometric subset of a data slice. Currently, we restrict the
@@ -87,11 +69,8 @@ public static void getInRange(ISBounds b){
 	@param b the ISBounds specifying the subregion to retrieve data for.
 	@returns the DataBlock containing the requested data.
 */
-public static DataBlock subblock(ISBounds b){
-
-
-
-}
+// public static DataBlock subblock(ISBounds b){
+// }
 
 
 
@@ -99,7 +78,7 @@ public static DataBlock subblock(ISBounds b){
 
 
 
-  public static void updateInformation(String dag, String hash){
+  public static void updateInformation(String dag, String hash) throws IOException{
     // System.out.println(dag);
     // We can now start processing dag here
     try{
@@ -119,7 +98,7 @@ public static DataBlock subblock(ISBounds b){
     }
   }
 
-  public static void updateDataSliceObject(JSONObject rawDag, DataSlice tempDataSliceObj){
+  public static void updateDataSliceObject(JSONObject rawDag, DataSlice tempDataSliceObj) throws IOException{
           JSONArray dataSectionArray = (JSONArray) rawDag.get("dataSectionList");
           Iterator sectionListItr = dataSectionArray.iterator();
           while(sectionListItr.hasNext()){

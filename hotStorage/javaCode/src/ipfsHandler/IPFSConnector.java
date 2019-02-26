@@ -1,5 +1,5 @@
-import io.ipfs.*;
 import io.ipfs.cid.*;
+import io.ipfs.*;
 import io.ipfs.multihash.Multihash;
 import io.ipfs.multiaddr.MultiAddress;
 import io.ipfs.api.IPFS;
@@ -15,6 +15,7 @@ public class IPFSConnector{
 
   public IPFSConnector(){
     try{
+            // System.out.println("Error");
             this.ipfs = new IPFS("/ip4/127.0.0.1/tcp/5001");
     }
     catch(Exception e){
@@ -24,16 +25,20 @@ public class IPFSConnector{
 
   }
 
-  public void pinFiles(ArrayList<String> listToPin) throws IOException{
+ public void pinFiles(ArrayList<String> listToPin) throws IOException{
     for(String item : listToPin){
       Cid hash = Cid.decode(item);
       String temp = ipfs.pin.add(hash).toString();
       System.out.println("Pinned : " + temp);
     }
   }
-  // public String getFile(String hash) throws IOException{
-  //
-  // }
+
+  public byte[] getFile(String hash) throws IOException{
+    Multihash filePointer = Multihash.fromBase58(hash);
+    byte[] fileContents = this.ipfs.cat(filePointer);
+    return fileContents;
+  }
+
   public String getDag(String hash) throws IOException{
     Cid genHash = Cid.decode(hash);
     System.out.println(genHash);
