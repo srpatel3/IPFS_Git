@@ -14,7 +14,7 @@ def addBlock(row, col, fileName):
             for i in range(0, row):
                 string = ''
                 for j in range(0, col):
-                    number = random.randint(0,1)
+                    number = random.random()
                     # total += number
                     string += str(number) + " "
                 string += "\n"
