@@ -15,4 +15,6 @@ rm $dataPATH*.class
 
 javac9 -cp ".:$jarFile/*:$libFile/*:" $driverPATH/*.java $ipfsPATH/*.java $dagPATH/*.java $remotePATH/*.java $dataPATH/*.java
 
-java9 -cp ".:$jarFile/*:$libFile/*:$ipfsPATH:$driverPATH:$remotePATH:$dagPATH:$dataPATH:" Driver
+# java9 -Xprof -cp  
+# ".:$jarFile/*:$libFile/*:$ipfsPATH:$driverPATH:$remotePATH:$dagPATH:$dataPATH:" Driver
+java9 -cp  ".:$jarFile/*:$libFile/*:$ipfsPATH:$driverPATH:$remotePATH:$dagPATH:$dataPATH:" Driver

@@ -3,33 +3,38 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.Files;
 import java.nio.*;
+import java.util.HashMap;
 
-public class Task implements Runnable{
+public class SubBlockTask implements Runnable{
   private String hash;
   private IPFSConnector ipfs_con;
-
-  public Task(String hash){
+  private ISBound bounds;
+  public static  HashMap<ISBound, float[]> arrayMap = new HashMap<ISBound, float[]>();
+  public SubBlockTask(String hash, ISBound bounds){
     this.hash = hash;
     this.ipfs_con = new IPFSConnector();
+    this.bounds = bounds;
   }
 
   public void run(){
     try{
-        // System.out.println("Getting : "+this.hash);
+
         byte[] data = ipfs_con.getFile(this.hash);
         ByteBuffer buf = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN);
-        // System.out.println("Length of Byte Array is : " + data.length);
         FloatBuffer fbuf = buf.asFloatBuffer();
         int numFloats = fbuf.limit();
         float [] floats = new float[numFloats];
         fbuf.get(floats);
-        // System.out.println("Length of float Array is : " + numFloats);
-        double sum = 0;
-        for(int i=0; i<numFloats; i++){
-          sum += floats[i];
-        }
+        arrayMap.put(this.bounds, floats);
 
-      Driver.resultTable.put(this.hash, sum);
+
+        // System.out.println("Length of float Array is : " + numFloats);
+        // double sum = 0;
+        // for(int i=0; i<numFloats; i++){
+        //   System.out.println(floats[i]);
+        // }
+
+      // Driver.resultTable.put(this.hash, sum);
     }
     catch(IOException e){
       e.printStackTrace();

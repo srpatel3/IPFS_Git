@@ -20,11 +20,12 @@ public class Driver{
   // To Maintain hash to dag relationship
   public static HashMap<String, DataSlice> lookupTable = new HashMap<String, DataSlice>();
   // To store calculated result
-  public static HashMap<String, Integer> resultTable = new HashMap<String, Integer>();
+  public static HashMap<String, Double> resultTable = new HashMap<String, Double>();
 
-  public static void main(String[] Args){
+  public static void main(String[] Args) throws IOException{
     System.out.println("In Main method");
     System.out.println("Now Starting Thread");
+    genDag();
     // Make sure to uncomment this lines as this will get us the list of dag
     RemoteConnector RMC = new RemoteConnector();
     Thread connector = new Thread(RMC);
@@ -33,18 +34,27 @@ public class Driver{
     int input = 0;
     // genDag();
     while (input !=5){
+
       System.out.println("Enter Min : ");
       int fInput = inFromKey.nextInt();
+      // int fInput = 50;
       System.out.println("Enter Max : ");
       int sInput = inFromKey.nextInt();
-			ISBound Bounds = new ISBound(fInput, sInput);
+      // int sInput = 55;
+      ISBound Bounds = new ISBound(fInput, sInput);
       // ArrayList<String> inRangeSlices = getInRangeSlices(Bounds);
       Getter getterObject = new Getter();
-      getterObject.getInRange(Bounds);
+      // getterObject.getInRange(Bounds);
       System.out.println("What do you want to do?");
       // getInRange(Bounds);
       input = inFromKey.nextInt();
-      // printList(inRangeSlices);
+      // printList(inRangeSlices);*/
+      // input = 5;
+      // int fInput = 3;
+      // int eInput = 9;
+      // ISBound Bounds = new ISBound(fInput, eInput);
+      // Getter getterObject = new Getter();
+      getterObject.getSubBlock(Bounds);
     }
     System.exit(0);
 
@@ -52,33 +62,11 @@ public class Driver{
 
 
 
-
-// public static void getDataSections(int min, int max){
-//   ArrayList<String> sliceHashes = getInRangeSlices(min, max);
-//   ArrayList<String> hashesToGet = new ArrayList<>();
-//   for(String hash : sliceHashes){
-//       hashesToGet.addAll(lookupTable.get(hash).getDataSections(min, max));
-//   }
-//   for(String hash : hashesToGet){
-//     System.out.println(hash);
-//   }
-// }
-					//range()
-
-
 /** Retrieve a geometric subset of a data slice. Currently, we restrict the
  *  implementation to handle only bounds that align exactly with block boundaries.
 	@param b the ISBounds specifying the subregion to retrieve data for.
 	@returns the DataBlock containing the requested data.
 */
-// public static DataBlock subblock(ISBounds b){
-// }
-
-
-
-
-
-
 
   public static void updateInformation(String dag, String hash) throws IOException{
     // System.out.println(dag);
@@ -127,8 +115,8 @@ public class Driver{
   }
 
 
-  public static void genDag(){
-    String fileName = "/home/sbot/git/IPFS_Git/hotStorage/pyScripts/dag1.json";
+  public static void genDag() throws IOException{
+    String fileName = "/home/sbot/dataDir/DAG/dag_0.json";
     try{
         File file = new File(fileName);
         FileInputStream fin = new FileInputStream(file);
@@ -140,7 +128,7 @@ public class Driver{
           System.out.println(e);
         }
 
-        // generateDag(new String(res).trim(), "HASH");
+        updateInformation(new String(res).trim(), "HASH");
     }
     catch(FileNotFoundException e){
       e.printStackTrace();
