@@ -1,4 +1,6 @@
-
+import java.util.ArrayList;
+import java.util.HashMap;
+//import ISBound;
 
 
 
@@ -20,11 +22,11 @@ public class RegularCompositeDataBlock {
 		blocks = floatBlocks;
 		
 		//FIXME: confusing to use start/end for specifying 2 dimensions
-		this.blockSpaceRows = blockSpaceShape.get_sBound;
-		this.blockSpaceCols = blockSpaceShape.get_eBound;
+		this.blockSpaceRows = blockSpaceShape.get_sBound();
+		this.blockSpaceCols = blockSpaceShape.get_eBound();
 		
-		this.blockShapeRows = blockShape.get_sBound;
-		this.blockShapeCols = blockShape.get_eBound;
+		this.blockShapeRows = blockShape.get_sBound();
+		this.blockShapeCols = blockShape.get_eBound();
 		
 	}
 	 
