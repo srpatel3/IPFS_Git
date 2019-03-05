@@ -4,7 +4,7 @@
 
 public class RegularCompositeDataBlock {
 
-	ArrayList<[] float> blocks;
+	ArrayList<float []> blocks;
 	
 	int blockSpaceRows;
 	int blockSpaceCols;
@@ -25,7 +25,6 @@ public class RegularCompositeDataBlock {
 		
 		this.blockShapeRows = blockShape.get_sBound;
 		this.blockShapeCols = blockShape.get_eBound;
-	
 		
 	}
 	 
