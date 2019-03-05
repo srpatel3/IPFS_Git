@@ -14,69 +14,52 @@ public class Driver{
 
 	// This arrayList could probably be replaced by another (faster) data structure such as
 	// the span-space algorithm (http://web.cse.ohio-state.edu/~shen.94/papers/Shen1996.pdf)
-	
+
+  // To screen result
   public  static ArrayList<ScreeningNode> screeningArray = new ArrayList<>();
+  // To Maintain hash to dag relationship
   public static HashMap<String, DataSlice> lookupTable = new HashMap<String, DataSlice>();
-  public static void main(String[] Args){
+  // To store calculated result
+  public static HashMap<String, Double> resultTable = new HashMap<String, Double>();
+
+  public static void main(String[] Args) throws IOException{
     System.out.println("In Main method");
     System.out.println("Now Starting Thread");
+    genDag();
     // Make sure to uncomment this lines as this will get us the list of dag
-    Thread connector = new Thread(new RemoteConnector());
+    RemoteConnector RMC = new RemoteConnector();
+    Thread connector = new Thread(RMC);
     connector.start();
     Scanner inFromKey = new Scanner(System.in);
     int input = 0;
     // genDag();
     while (input !=5){
+
       System.out.println("Enter Min : ");
-      int min = inFromKey.nextInt();
+      int fInput = inFromKey.nextInt();
+      // int fInput = 50;
       System.out.println("Enter Max : ");
-      int max = inFromKey.nextInt();
-      ArrayList<String> inRangeSlices = getInRangeSlices(min, max);
+      int sInput = inFromKey.nextInt();
+      // int sInput = 55;
+      ISBound Bounds = new ISBound(fInput, sInput);
+      // ArrayList<String> inRangeSlices = getInRangeSlices(Bounds);
+      Getter getterObject = new Getter();
+      // getterObject.getInRange(Bounds);
       System.out.println("What do you want to do?");
+      // getInRange(Bounds);
       input = inFromKey.nextInt();
-      // printList(inRangeSlices);
-      getDatums(min, max);
+      // printList(inRangeSlices);*/
+      // input = 5;
+      // int fInput = 3;
+      // int eInput = 9;
+      // ISBound Bounds = new ISBound(fInput, eInput);
+      // Getter getterObject = new Getter();
+      getterObject.getSubBlock(Bounds);
     }
+    System.exit(0);
 
   }
 
-
- public static ArrayList<String> getInRangeSlices(int min, int max){
-   ArrayList<String> tempList = new ArrayList<>();
-   for(ScreeningNode tempNode : screeningArray){
-     if (tempNode.isInRange(min, max)){
-       tempList.add(tempNode.getHash());
-     }
-   }
-   return tempList;
- }
-
-// public static void getDataSections(int min, int max){
-//   ArrayList<String> sliceHashes = getInRangeSlices(min, max);
-//   ArrayList<String> hashesToGet = new ArrayList<>();
-//   for(String hash : sliceHashes){
-//       hashesToGet.addAll(lookupTable.get(hash).getDataSections(min, max));
-//   }
-//   for(String hash : hashesToGet){
-//     System.out.println(hash);
-//   }
-// }
-					//range()
-public static void getDatums(int min, int max){
-  ArrayList<String> sliceHashes = getInRangeSlices(min, max);
-  ArrayList<String> hashesToGet = new ArrayList<>();
-  for(String hash : sliceHashes){
-      hashesToGet.addAll(lookupTable.get(hash).getDatums(min, max));
-  }
-  for(String hash : hashesToGet){
-    System.out.println(hash);
-  }
-  
-  
-  
-  // return a DataBlock [] 
-  // return hashesToGet;
-}
 
 
 /** Retrieve a geometric subset of a data slice. Currently, we restrict the
@@ -84,19 +67,8 @@ public static void getDatums(int min, int max){
 	@param b the ISBounds specifying the subregion to retrieve data for.
 	@returns the DataBlock containing the requested data.
 */
-public static DataBlock subblock(ISBounds b){
 
-
-
-}
-
-
-
-
-
-
-
-  public static void updateInformation(String dag, String hash){
+  public static void updateInformation(String dag, String hash) throws IOException{
     // System.out.println(dag);
     // We can now start processing dag here
     try{
@@ -116,7 +88,7 @@ public static DataBlock subblock(ISBounds b){
     }
   }
 
-  public static void updateDataSliceObject(JSONObject rawDag, DataSlice tempDataSliceObj){
+  public static void updateDataSliceObject(JSONObject rawDag, DataSlice tempDataSliceObj) throws IOException{
           JSONArray dataSectionArray = (JSONArray) rawDag.get("dataSectionList");
           Iterator sectionListItr = dataSectionArray.iterator();
           while(sectionListItr.hasNext()){
@@ -143,8 +115,8 @@ public static DataBlock subblock(ISBounds b){
   }
 
 
-  public static void genDag(){
-    String fileName = "/home/sbot/git/IPFS_Git/hotStorage/pyScripts/dag1.json";
+  public static void genDag() throws IOException{
+    String fileName = "/home/sbot/dataDir/DAG/dag_0.json";
     try{
         File file = new File(fileName);
         FileInputStream fin = new FileInputStream(file);
@@ -156,7 +128,7 @@ public static DataBlock subblock(ISBounds b){
           System.out.println(e);
         }
 
-        // generateDag(new String(res).trim(), "HASH");
+        updateInformation(new String(res).trim(), "HASH");
     }
     catch(FileNotFoundException e){
       e.printStackTrace();

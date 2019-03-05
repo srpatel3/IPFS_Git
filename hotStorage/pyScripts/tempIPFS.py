@@ -3,6 +3,7 @@ import random
 import ipfsapi
 
 def getDataBlockList(dataSectionPath, api):
+    global block_number
     dataBlockList = []
     gMin = 1000
     gMax = 0
@@ -21,7 +22,10 @@ def getDataBlockList(dataSectionPath, api):
             gMin = min(metaNumber, metaNumber1, gMin)
             gMax = max(metaNumber, metaNumber1, gMax)
             res = api.add(dataBlockPath)
+            print res
+            # dataBlockInfo['number'] = str(block_number)
             dataBlockInfo['number'] = str(i)
+            block_number += 1
             dataBlockInfo['hash'] = res['Hash']
             dataBlockList.append(dataBlockInfo)
             # fileToRead.close()
@@ -36,7 +40,7 @@ def getDataSectionList(slicePath,api):
     for i in range(0,4):
         dataSectionInfo = dict()
         # Will have to change it to i
-        dataSectionPath = slicePath+"/"+"BLOCK_"+str(0)
+        dataSectionPath = slicePath+"/"+"BLOCK_"+str(i)
         dataBlockList, min, max = getDataBlockList(dataSectionPath, api)
         dataSectionInfo["number"] = str(i)
         dataSectionInfo["dataBlockList"] = dataBlockList
@@ -47,7 +51,7 @@ def getDataSectionList(slicePath,api):
         if max > gMax:
             gMax = max
         dataSectionList.append(dataSectionInfo)
-    return dataSectionList, min, max
+    return dataSectionList, gMin, gMax
 
 def addDataSlice(slicePath, sliceNumber):
     sliceInfo = dict()
@@ -60,10 +64,21 @@ def addDataSlice(slicePath, sliceNumber):
     return sliceInfo
 
 def main():
-    slicePath = "/home/sbot/dataDir/hotStorage/SLICE_0"
-    print "Entering Folder : " + slicePath+"/"+"SLICE_0"
-    with open("dag1.json","w") as fileToWrite:
-        # addDataSlice takes in two parameter path of SLICE dir and sliceNumber
-        json.dump(addDataSlice(slicePath, 0), fileToWrite)
+    global block_number
+    slicePath = "/home/sbot/dataDir/hotStorage/SLICE_"
+    dagFile = "/home/sbot/dataDir/DAG/dag_"
+    for i in range(0,1):
+        block_number = 0
+        tempPath = slicePath+str(i)
+        tempDag = dagFile+str(i)+".json"
+        print "Entering Folder : " + slicePath+"/"+"SLICE_"+str(i)
+        with open(tempDag,"w") as fileToWrite:
+            # addDataSlice takes in two parameter path of SLICE dir and sliceNumber
+            json.dump(addDataSlice(tempPath, i), fileToWrite)
+
+
+block_number = 0
+
 if __name__ == "__main__":
     main()
+

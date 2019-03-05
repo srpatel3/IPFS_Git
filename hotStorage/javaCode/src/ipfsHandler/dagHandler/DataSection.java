@@ -29,6 +29,11 @@ public class DataSection{
     return tempList;
   }
 
+  public String getBlocks(int row, int col){
+      // System.out.println("Block cordinates : "+row+","+col);
+      return this.dataBlockList[(row%2)*2+(col%2)].getHash();
+  }
+
   public boolean isInRange(int min, int max){
     if (min >= this.getMin() && max <= this.getMax()){
       return true;

@@ -1,8 +1,7 @@
 import random
 import os
 import json
-from floatGen import getFloatList
-from array import array
+
 def addBlock(row, col, fileName):
     try:
         total = 0
@@ -11,19 +10,17 @@ def addBlock(row, col, fileName):
             os.mkdir(fileName)
         print "Adding data for : "+fileName
         for k in range(0,4):
-            fileToWrite = open(fileName+"/data_"+str(k), "wb")
-            floatArray = array('f',getFloatList(row*col))
-            floatArray.tofile(fileToWrite)
-            # for i in range(0, row):
-            #     string = ''
-            #     for j in range(0, col):
-            #         number = random.random()
-            #         # total += number
-            #         string += str(number) + " "
-            #     string += "\n"
-            #     fileToWrite.write(string)
+            fileToWrite = open(fileName+"/data_"+str(k), "w")
+            for i in range(0, row):
+                string = ''
+                for j in range(0, col):
+                    number = random.random()
+                    # total += number
+                    string += str(number) + " "
+                string += "\n"
+                fileToWrite.write(string)
 
-            # print "Total is : "+ str(total)
+            print "Total is : "+ str(total)
 
             try:
                 fileToWrite.close()
@@ -43,10 +40,9 @@ def addBlock(row, col, fileName):
 # this one is to create new directory for each block item
 def blockGenInNewDir(row,col, numberOfSlices):
     print "Starting...."
-    global blockNumber
     dirPath = "/home/sbot/dataDir/hotStorage/"
     for i in range(0, numberOfSlices):
-        slicePath = dirPath+"SLICE_"+str(i)
+        slicePath = dirPath+"SLICE_"+str(i);
         try:
             if not os.path.isdir(slicePath):
                 print "Creating new directory : " + slicePath
@@ -67,9 +63,5 @@ def main():
     blockGenInNewDir(row, col, numberOfSlices)
 # Check if there is main method or not
 # If there is no main method it will release an error
-
-# global variable to keep track of block number
-# blockNumber = 0
-
 if __name__ == "__main__":
     main()
