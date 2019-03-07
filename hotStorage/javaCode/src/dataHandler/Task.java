@@ -24,7 +24,7 @@ public class Task implements Runnable{
         float [] floats = new float[numFloats];
         fbuf.get(floats);
         // System.out.println("Length of float Array is : " + numFloats);
-        double sum = 0;
+        float sum = 0;
         for(int i=0; i<numFloats; i++){
           sum += floats[i];
         }

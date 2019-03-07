@@ -1,0 +1,58 @@
+# This is the prefs file for the rt program.
+# It is intended for the setting of rt variables for
+# a particular machine, but any valid line of perl will
+# presumably work. Below we show examples for the most useful variables. 
+# These settings are usually commented out, because they reflect
+# the default settings.
+# Any of these settings can also be overridden in a .sc file using
+# a line beginning with > 
+
+# The default, needed For java 1.4.2
+$jvm_options="-Xms200m -Xmx1600m -XX:MaxDirectMemorySize=1024m";
+# For java 1.4.1 and previous versions
+#$jvm_options="-Xms200m -Xmx1600m -Dcom.sun.nio.MaxDirectMemorySize=1024m";
+#$jvm_options="";
+
+# $classpath is taken from the environment by default, but can
+# be set here. Notice that we can use a variable JARDIR (or any 
+# other variable),  to make things easier. 
+#$JARDIR = "/home/graphics/sdb/jars/testing";
+#$classpath = $classpath = ".:$JARDIR/Datasource.jar:$JARDIR/Common.jar:$JARDIR/xerces.jar:$JARDIR/CommandProcessor.jar:$JARDIR/Xmlreader.jar";
+$classpath = ".";
+
+# $root is a convenience variable that can be used to specify the 
+# directory containing the dlfiles, tests, and results directories
+# files. 
+# $root = $ENV{PWD}; 
+
+# $workingDirectory should be a path to the directory containing the
+# java classes you want to run. This will also be the working directory
+# for the java program.
+# $workingDirectory="./tests";
+
+# $dlfiledir should be a path to the directory containing xfdl and xddl
+# files. This string is prepended to the first argument of java programs. 
+# $dlfiledir = $root."/dlfiles";
+ $dlfiledir = "./testdata";
+
+
+# $resultroot  should be a path to the directory containing the results 
+# directories. 
+# $resultroot = $root."/results";
+
+# $tmpdir should be a path to the directory containing the intermediate 
+# results directories.
+# $tmpdir = "/tmp/sdb.tests";
+
+# set printstats to 0 if you never want statistics printed out for tags
+# this is set to 1 by default
+# $printstats=1;
+
+# set printstats to 0 if you never want histograms printed out for tags
+# this is set to 1 by default
+# $printhistogram=0;
+
+# set mailAddress to an email address if you want a message
+# when the test is done. Remember to escape the @ character.
+# $mailAddress="rhodes\@cs.unh.edu";
+# $mailAddress="";

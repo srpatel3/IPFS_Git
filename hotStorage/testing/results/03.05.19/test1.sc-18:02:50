@@ -1,0 +1,37 @@
+ 18:02:50 up 12 days,  5:54,  2 users,  load average: 0.70, 0.71, 0.62
+USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
+sbot     tty7     :0               21Feb19 12days  6:33m  0.40s /sbin/upstart --user
+sbot     pts/20   130.74.96.30     14:43    2.00s  0.46s  0.00s sh -c w >> /home/sbot/git/IPFS_Git/hotStorage/testing/results/03.05.19/test1.sc-18:02:50
+## 5 java Test1  
+%%% time 76578
+%%% blocks 12
+%%% time 76578
+%%% blocks 12
+%%% time 76578
+%%% blocks 12
+%%% time 76578
+%%% blocks 12
+%%% time 76578
+%%% blocks 12
+#For tag "time":
+#	Stats: min=76578, max=76578, average=76578
+	Value Range 	   Occurrences  Graph
+	76578.00 - 76579.00 	 5	*****
+	76579.00 - 76580.00 	 0	
+	76580.00 - 76581.00 	 0	
+	76581.00 - 76582.00 	 0	
+	76582.00 - 76583.00 	 0	
+Done.
+
+
+#For tag "blocks":
+#	Stats: min=12, max=12, average=12
+	Value Range 	   Occurrences  Graph
+	  12.00 -   13.00 	 5	*****
+	  13.00 -   14.00 	 0	
+	  14.00 -   15.00 	 0	
+	  15.00 -   16.00 	 0	
+	  16.00 -   17.00 	 0	
+Done.
+
+

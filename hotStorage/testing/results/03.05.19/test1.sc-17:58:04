@@ -1,0 +1,5 @@
+ 17:58:04 up 12 days,  5:49,  2 users,  load average: 0.69, 0.71, 0.58
+USER     TTY      FROM             LOGIN@   IDLE   JCPU   PCPU WHAT
+sbot     tty7     :0               21Feb19 12days  6:32m  0.40s /sbin/upstart --user
+sbot     pts/20   130.74.96.30     14:43    3.00s  0.44s  0.00s sh -c w >> /home/sbot/git/IPFS_Git/hotStorage/testing/results/03.05.19/test1.sc-17:58:04
+## 5 java Test1  

@@ -4,6 +4,7 @@ public class DataSection{
   private int min;
   private int max;
   private int dataSectionNumber;
+  private int dataSectionDimension;
   private String path; // path starts with hash
   private DataBlock[] dataBlockList;
   // Constructor
@@ -12,6 +13,7 @@ public class DataSection{
     this.max = max;
     this.dataSectionNumber = dataSectionNumber;
     this.path = path;
+    this.dataSectionDimension = 2;
     this.dataBlockList = new DataBlock[4];
   }
   // Adding dataBlock to the list
@@ -29,9 +31,12 @@ public class DataSection{
     return tempList;
   }
 
+  private int getIndex(int row, int col){
+    return (row % this.dataSectionDimension )* this.dataSectionDimension+(col% this.dataSectionDimension);
+  }
   public String getBlocks(int row, int col){
       // System.out.println("Block cordinates : "+row+","+col);
-      return this.dataBlockList[(row%2)*2+(col%2)].getHash();
+      return this.dataBlockList[this.getIndex(row, col)].getHash();
   }
 
   public boolean isInRange(int min, int max){

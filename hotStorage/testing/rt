@@ -1,0 +1,431 @@
+#!/usr/bin/perl -w 
+
+
+use Cwd;
+use Cwd 'chdir';
+use POSIX qw(strftime);
+use File::Basename;
+
+print "\n";
+
+%resultHash=();
+my $tag;
+my $value;
+
+
+
+
+$scriptname=$ARGV[0];
+$time = time();
+
+$user = $ENV{"USER"}; 
+
+#default settings
+# these can be overridden in the prefs file
+# or directly in a .sc file.
+$printstats=1;
+$printhistogram=1;
+$classpath=$ENV{"CLASSPATH"};
+$jvm_options="-Xms200m -Xmx1600m -XX:MaxDirectMemorySize=1024m";
+$root=$ENV{"PWD"};
+$trc = "";
+
+if($root eq "") {
+   $root=".";
+}
+
+$dlfiledir=$root."/dlfiles"; 
+$resultroot=$root."/results";
+$tempdir="/tmp/$user.tests";
+$workingDirectory="./tests";
+$mailAddress="";
+$sleeptime=0;
+$maxretrys = 3;
+
+# load any local preferences and print
+# a status message.
+print loadprefs("./rt.prefs");
+
+if ( ! -d $tempdir){
+	mkdir $tempdir;
+}
+
+$tempfilename=$tempdir."/test".$time;
+
+
+
+
+$datestr = strftime("%m.%d.%y", localtime($time));
+$timestr = strftime("%H:%M:%S", localtime($time));
+
+
+
+
+$resultdir=$resultroot."/".$datestr;
+
+
+
+
+
+
+
+if ( -d $resultdir){
+	print "Using directory ./results/$datestr for output files.\n";
+} else {
+	print "Creating directory ./results/$datestr for output files.\n";
+
+	`mkdir -p $resultdir`;
+}
+	
+	
+$resultdir .="/";
+$scriptnamebase=basename($scriptname);
+$resultfilename=$resultdir.$scriptnamebase."-".$timestr;
+
+
+`ln -sf  $resultfilename last`;
+
+
+
+open (SCRIPTFILE,$scriptname) || die "Can't open script file: $scriptname\n";
+
+`w`;
+`w >> $resultfilename`;
+
+
+chdir $workingDirectory;
+
+while (<SCRIPTFILE>) { 
+
+	if (m/^\s*$/){
+		next;    		# skip blank lines
+	} elsif (m/^\s*#/){
+		next;    		# skip comment lines
+	} elsif (m/^\s*>/){
+		($special) = (split /\s+/,$_,2)[1];	
+		eval($special);
+		next;
+	}elsif (m/^\s*[0-9]+/){ # process normal test line
+			
+		($Reps,$Command,$dlfile,$therest) = (split /\s+/,$_,4)[0,1,2,3];	
+		
+		if(!$dlfile){
+			$dlfile = "";
+		}
+	
+		if(!$therest){
+			$therest = "";
+		}
+
+		%resultHash=();
+		$shellcommand = $Command =~ m/^\s*!/;	
+
+		if($shellcommand){
+
+			$Command =~ s/!//;
+
+			print "## $Reps $Command $dlfile $therest\n";
+			`(echo "## $Reps $Command $dlfile $therest") >> $resultfilename`;
+
+		} else {	
+			print "## $Reps java -classpath $classpath $jvm_options $Command $dlfile $therest\n";
+			`(echo "## $Reps java $Command $dlfile $therest") >> $resultfilename`;
+		}		
+		
+		
+		#print "$tempfilename \n";
+		for($i=0;$i<$Reps;$i++){	
+		
+		   `rm -f $tempfilename`;
+
+		   if($trc ne ""){
+		      
+		      ` (echo "Clearing Cache.") > $tempfilename`;
+		      print "Clearing Cache.\n";
+		      system($trc." > $tempfilename 2>&1");
+		   }
+		   
+			
+			if($shellcommand){		
+			   $attempts=0;
+			   $status = 0;
+				while($attempts < $maxretrys){
+				   $prog = ("($Command $dlfile $therest) >> $tempfilename 2>&1");
+				   #print "$tempfilename \n";
+				   system($prog);
+				   
+				   $status = $? >> 8;
+				   
+				   #print "Status - $status\n";
+				   
+				   if($status==0){
+				   
+				      last;
+				   } else {
+				   
+				      print "Non-zero return status.";
+				   }
+				   $attempts++;
+				   
+				   print "*** Failed Attempt number $attempts. ";
+				   if($attempts != $maxretrys){
+				      `rm -f $tempfilename`;
+				      print "Retrying.";
+				   } 
+				   
+				   print "\n";
+				}
+				
+			} else {
+			   $attempts=0;
+			   $status = 0;
+				while($attempts < $maxretrys){
+				   $prog = ("(java -classpath $classpath $jvm_options $Command $dlfiledir/$dlfile $therest)  2>&1 > $tempfilename");
+				   #print "$tempfilename \n";
+				   system($prog);
+				   $status = $? >> 8;
+
+				   if($status==0){
+				      last;
+				   }
+				   $attempts++;
+				   
+				   print "*** Failed Attempt number $attempts. ";
+				   if($attempts != $maxretrys){
+				      `rm -f $tempfilename`;
+				      print "Retrying.";
+				   } 
+				   
+				   print "\n";
+				}
+			}	
+
+			`cat $tempfilename >> $resultfilename`;
+			open(OUTPUTFILE,$tempfilename) || die "Can't open output file: $tempfilename\n";
+			
+			while(<OUTPUTFILE>){
+				if(m/%%%/){
+					chomp(($tag,$value) = (split /\s+/,$_,3)[1,2]);
+	
+					
+					if ($resultHash{$tag}) {
+	
+						push @{$resultHash{$tag}}, $value;
+						
+					} else {
+	
+						$resultHash{$tag} = [ $value ];
+					}
+					
+				}
+			}
+			
+			close(OUTPUTFILE);
+			`rm -f $tempfilename`;
+			
+			sleep $sleeptime;
+		}
+		
+		
+		if( $printstats || $printhistogram){
+			open(RESULTFILE,">> ".$resultfilename) || die "Can't open result file: $resultfilename\n";
+			
+			@streams=(*STDOUT,*RESULTFILE);
+			
+			for $tag ( keys %resultHash ) {
+				
+				multiprint("#For tag \"$tag\":\n",@streams);
+				
+				if($printstats){
+					($min,$max)=print_stats($tag,$resultHash{$tag},\@streams);
+					print "\n";
+				}
+				
+				
+				if($printhistogram){
+					histogram($min,$max,5,$resultHash{$tag},\@streams);
+				}
+				
+				multiprint ("Done.\n\n\n",@streams);
+			}
+			
+			close(RESULTFILE);
+		}
+	}
+	
+	
+}
+	
+	
+
+close(SCRIPTFILE);
+
+if($mailAddress){
+
+	sendMailAlert($mailAddress);
+}
+
+sub print_stats{
+
+	
+	my $tag=$_[0];
+	my @results=@{$_[1]}; 
+	my @outputstreams=@{$_[2]};
+	
+	my ($min, $max, $sum, $avg);
+	my @adjustedcount=0;
+	my $adjustedsum=0;
+	my $adjavg;
+
+
+	$min=$max=$results[0];
+	$sum=0;
+
+	foreach $element (@results){
+	
+
+		$min=($element < $min)?$element:$min;
+		$max=($element > $max)?$element:$max;
+		$sum+=$element;
+	}
+	
+	$avg=$sum/($#results+1);
+	
+	
+# 	if(($#results+1) > 2 && $avg != 0) {
+#       foreach $element (@results){
+#       
+#         $distance = ($element - $avg) / $avg;
+#         
+#         
+#         #print "$element --> $distance\n";
+#         
+#         if ( $distance < 0.5 && $distance > -0.5) {
+#       
+#            $adjustedcount++;
+#            $adjustedsum += $element;
+#         }
+#       }
+#    
+#       $adjavg = $adjustedsum / $adjustedcount;
+#    } else {
+#    
+#       $adjavg = $avg;
+#    }
+	
+	
+# 	multiprint("#\tStats: min=$min, max=$max, average=$avg, adjaverage=$adjavg\n",@outputstreams);
+	multiprint("#\tStats: min=$min, max=$max, average=$avg\n",@outputstreams);
+	
+	return ($min,$max);
+}
+
+
+
+#  
+# Usage: histogram(min,max,number of bins, \array of values);
+#
+sub histogram{
+
+	#my ($min,$max,$num_bins,@values)=@_;
+	
+	my $min=$_[0];
+	my $max=$_[1];
+	my $num_bins=$_[2];
+	my @values=@{$_[3]};
+	my @outputstreams=@{$_[4]};
+	
+	
+	my $binwidth=($max == $min) ? 1 : ($max-$min)/$num_bins;
+	my $bin_index;
+	my @bins=[];
+	my $outputline;
+	
+	
+	#initialize the bins
+	for ($i=0;$i<$num_bins; $i++){
+		$bins[$i]=0;
+	}
+	
+	
+	foreach $element (@values){
+	
+		$bin_index=($element-$min) / $binwidth;
+		
+		$bin_index= ($bin_index > $num_bins-1) ? $num_bins-1: $bin_index;
+		
+		$bins[$bin_index]++;
+	}
+	
+	
+	$outputline=sprintf("\tValue Range \t   Occurrences  Graph\n");
+	multiprint($outputline,@outputstreams);
+	
+	
+	for ($i=0;$i<$num_bins; $i++){
+	
+		$outputline=sprintf("\t%7.2f - %7.2f \t %d\t", $min+$binwidth*$i,$min+$binwidth*($i+1),$bins[$i]);
+		multiprint($outputline,@outputstreams);
+		
+		for($j=0;$j<$bins[$i];$j++){
+			multiprint("*",@outputstreams);
+		}
+		
+		multiprint("\n",@outputstreams);
+		
+	}
+	
+}
+
+
+sub multiprint{
+
+	my ($printstring,@outputstreams)=@_;
+	
+	foreach $stream (@outputstreams){
+		print $stream $printstring; 
+	}
+}
+
+
+
+# loadprefs looks for a prefsfile in the current working directory
+# called "runscript.prefs". This file may contain valid perl statements,
+# including comment lines, that affect the behavior of runscript. This
+# is most commonly just assignment statements for variables.
+sub loadprefs{
+
+	
+	open (PREFSFILE,"@_") || (return  "Couldn't open prefs file @_\n");
+	
+	while (<PREFSFILE>) { 
+	
+		if (m/^\s*$/){
+			next;    		# skip blank lines
+		} elsif (m/^\s*#/){
+			next;    		# skip comment lines
+		} else{
+			eval($_);		#evaluate any other line
+			next;
+		}
+
+	}
+	
+	close(PREFSFILE);
+	
+	return "Loaded prefs from @_\n";
+}
+
+
+
+sub sendMailAlert{
+
+	my $datestr = strftime("%m.%d.%y", localtime($time));
+	my $timestr = strftime("%H:%M:%S", localtime($time));
+	my $hostname=$ENV{"HOST"};
+	
+	`echo "Your test on $hostname finished at $timestr on $datestr" | mail -s "runscript test finished" @_ `;
+
+
+
+}

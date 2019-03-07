@@ -33,11 +33,7 @@ public class RemoteConnector implements Runnable{
         BufferedReader inFromClient = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
 				String hashFromClient;
 				while ((hashFromClient = inFromClient.readLine())!= null){
-					 // inFromClient.readLine();
-					// System.out.println(hashFromClient);
-					// System.out.println("Hash Received from Client");
 					Driver.updateInformation(ipfsCon.getDag(hashFromClient),hashFromClient);
-					// Driver.strArray.add(hashFromClient);
 				}
 
         }

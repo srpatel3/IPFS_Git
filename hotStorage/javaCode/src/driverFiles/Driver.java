@@ -20,7 +20,7 @@ public class Driver{
   // To Maintain hash to dag relationship
   public static HashMap<String, DataSlice> lookupTable = new HashMap<String, DataSlice>();
   // To store calculated result
-  public static HashMap<String, Double> resultTable = new HashMap<String, Double>();
+  public static HashMap<String, Float> resultTable = new HashMap<String, Float>();
 
   public static void main(String[] Args) throws IOException{
     System.out.println("In Main method");
@@ -37,24 +37,13 @@ public class Driver{
 
       System.out.println("Enter Min : ");
       int fInput = inFromKey.nextInt();
-      // int fInput = 50;
       System.out.println("Enter Max : ");
       int sInput = inFromKey.nextInt();
-      // int sInput = 55;
       ISBound Bounds = new ISBound(fInput, sInput);
-      // ArrayList<String> inRangeSlices = getInRangeSlices(Bounds);
       Getter getterObject = new Getter();
-      // getterObject.getInRange(Bounds);
       System.out.println("What do you want to do?");
-      // getInRange(Bounds);
       input = inFromKey.nextInt();
-      // printList(inRangeSlices);*/
-      // input = 5;
-      // int fInput = 3;
-      // int eInput = 9;
-      // ISBound Bounds = new ISBound(fInput, eInput);
-      // Getter getterObject = new Getter();
-      getterObject.getSubBlock(Bounds);
+      getterObject.getSubBlock(Bounds, new ISBound(1000,1000));
     }
     System.exit(0);
 
@@ -116,18 +105,23 @@ public class Driver{
 
 
   public static void genDag() throws IOException{
-    String fileName = "/home/sbot/dataDir/DAG/dag_0.json";
-    try{
-        File file = new File(fileName);
-        FileInputStream fin = new FileInputStream(file);
-        byte[] res = new byte[(int) file.length()];
-        try{
-            fin.read(res);
-        }
-        catch(IOException e){
-          System.out.println(e);
-        }
+    // String fileName = "/home/sbot/dataDir/DAG/dag_0.json";
+        // File file = new File(fileName);
+        // FileInputStream fin = new FileInputStream(file);
+        // byte[] res = new byte[(int) file.length()];
+        // try{
+        //     fin.read(res);
+        // }
+        // catch(IOException e){
+        //   System.out.println(e);
+        // }
 
+    String fileName = "/home/sbot/dataDir/DAG/dagList";
+    try (BufferedReader br = new BufferedReader(new FileReader("dagList"))) {
+    	   String line;
+    	   while ((line = br.readLine()) != null) {
+           System.out.println("Sending file name to server: "+line);
+    		}
         updateInformation(new String(res).trim(), "HASH");
     }
     catch(FileNotFoundException e){

@@ -8,10 +8,10 @@ dataPATH="/home/sbot/git/IPFS_Git/hotStorage/javaCode/src/dataHandler"
 jarFile="/home/sbot/git/IPFS_Git/hotStorage/javaCode/jar"
 libFile="/home/sbot/git/IPFS_Git/hotStorage/javaCode/jar/lib"
 
-rm $ipfsPATH*.class
-rm $driverPATH*.class
-rm $remotePATH*.class
-rm $dataPATH*.class
+rm $ipfsPATH/*.class
+rm $driverPATH/*.class
+rm $remotePATH/*.class
+rm $dataPATH/*.class
 
 javac9 -cp ".:$jarFile/*:$libFile/*:" $driverPATH/*.java $ipfsPATH/*.java $dagPATH/*.java $remotePATH/*.java $dataPATH/*.java
 

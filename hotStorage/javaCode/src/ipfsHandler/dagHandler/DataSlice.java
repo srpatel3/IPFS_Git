@@ -5,6 +5,7 @@ public class DataSlice{
   private int min;
   private int max;
   private int dataSliceNumber;
+  private int dataSliceDimension;
   private String path; // path starts with hash
   private DataSection[] dataSectionList;
 
@@ -15,6 +16,7 @@ public class DataSlice{
     this.max = max;
     this.dataSliceNumber = dataSliceNumber;
     this.path = path;
+    this.dataSliceDimension = 2;
     this.dataSectionList = new DataSection[4];
   }
 
@@ -46,28 +48,32 @@ public class DataSlice{
     return tempList;
   }
 
-  public int getDataSectionIndex(int i, int j){
-      return i*2+j;
+  private int getDataSectionIndex(int row, int col){
+      return row * this.dataSliceDimension + col;
   }
-  public HashMap<String, ISBound> getSubBlock(ISBound b){
-    int sIndex = b.get_sBound();
-    int eIndex = b.get_eBound();
-    int dimension = 4;
-    int sRow = sIndex/dimension;
-    int sCol = sIndex%dimension;
-    int eRow = eIndex/dimension;
-    int eCol = eIndex%dimension;
+
+  public HashMap<String, ISBound> getSubBlock(ISBound sub_block_dimension, ISBound block_space_dimension){
+    int sIndex = sub_block_dimension.get_sBound();
+    int eIndex = sub_block_dimension.get_eBound();
+    int row_dimension = block_space_dimension.get_sBound();
+    int col_dimension = block_space_dimension.get_eBound();
+    int sRow = sIndex / row_dimension;
+    int sCol = sIndex % row_dimension;
+    int eRow = eIndex / row_dimension;
+    int eCol = eIndex % row_dimension;
     int starting_row = Math.min(sRow,eRow);
     int ending_row = Math.max(sRow, eRow);
     int starting_col = Math.min(sCol, eCol);
     int ending_col = Math.max(sCol, eCol);
+
+
     ArrayList<String> hashesToGet = new ArrayList<>();
     HashMap<String, ISBound> hash_to_ISB = new HashMap<>();
     for(int i = starting_row ; i <= ending_row ; i++){
       for(int j = starting_col; j<= ending_col; j++){
-          int datasection_index = getDataSectionIndex(i/2,j/2);
+          int datasection_index = getDataSectionIndex(i / this.dataSliceDimension, j / this.dataSliceDimension);
           // System.out.println(datasection_index);
-          System.out.println("Cordinates are : "+i+","+j +" from " + datasection_index);
+          // System.out.println("Cordinates are : "+i+","+j +" from " + datasection_index);
           if(this.dataSectionList[datasection_index] != null){
             // hashesToGet.add(this.dataSectionList[datasection_index].getBlocks(i,j));
               hash_to_ISB.put(this.dataSectionList[datasection_index].getBlocks(i,j),new ISBound(i,j));

@@ -33,8 +33,15 @@ public class IPFSConnector{
     }
   }
 
+  public void pinFile(String hashToPin) throws IOException{
+      Cid hash = Cid.decode(hashToPin);
+      String temp = ipfs.pin.add(hash).toString();
+      System.out.println("Pinned : " + temp);
+  }
+
   public byte[] getFile(String hash) throws IOException{
-    System.out.println("Trying to get file : "+hash);
+    this.pinFile(hash);
+    // System.out.println("Trying to get file : "+hash);
     Multihash filePointer = Multihash.fromBase58(hash);
     byte[] fileContents = this.ipfs.cat(filePointer);
     // System.out.println("Done Fetching File");

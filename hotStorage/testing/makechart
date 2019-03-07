@@ -1,0 +1,139 @@
+#!/usr/bin/perl -w
+
+if(@ARGV){
+
+	open(RESULTFILE,$ARGV[0]) || die "Can't open result file \"$ARGV[0]\"\n";
+	
+} else {
+
+	print "No filename given. Trying ./last\n";
+	
+	open(RESULTFILE,"last") || die "Can't open result file\n";
+
+}
+
+$numRest=0;
+
+while( <RESULTFILE> ){
+
+	if(m/^##\s+(\d*)\s+java ([\w]*)\s+(.*)/){
+	
+		$rest=$3;
+		getNumRest($rest);
+		last;
+		
+	} elsif(m/^##\s+(\d*)\s+([\w,~,\/]*)\s+(.*)/){
+	
+		$rest=$3;
+		getNumRest($rest);
+		last;
+		
+	}	
+	
+}
+
+close(RESULTFILE);
+
+#print $numRest;
+#print "\n";
+
+printheader($numRest);
+
+if(@ARGV){
+
+	open(RESULTFILE,$ARGV[0]) || die "Can't open result file \"$ARGV[0]\"\n";
+	
+} else {
+
+	#print "No filename given. Trying ./last\n";
+	
+	open(RESULTFILE,"last") || die "Can't open result file\n";
+
+}
+
+while( <RESULTFILE> ){
+
+	if(m/^##\s+(\d*)\s+java ([\w]*)\s+(.*)/){
+	
+		$reps=$1;
+		$command=$2;
+		$rest=$3;
+		
+		#print "Found java line: command is $command, rest=$rest\n";
+
+	} elsif(m/^##\s+(\d*)\s+([\w,~,\/]*)\s+(.*)/){
+	
+		$reps=$1;
+		$command=$2;
+		$rest=$3;
+		
+		#print "Found shell line: reps is $reps, command is $command, rest=$rest\n";
+
+	}
+	
+	if (m/^#For tag \"([\w]*)\":/){
+	
+		$tag=$1;
+	
+		#print "Found tag line: tag is $tag\n";
+	}
+	
+	
+# 	if (m/^#\s*Stats:\s*min=(\d*\.?\d*),\s*max=(\d*\.?\d*),\s*average=(\d*\.?\d*),\s*adjaverage=(\d*\.?\d*)/){
+	if (m/^#\s*Stats:\s*min=(\d*\.?\d*),\s*max=(\d*\.?\d*),\s*average=(\d*\.?\d*)/){
+
+		$min=$1;
+		$max=$2;
+		$avg=$3;
+		$adjavg=$4;
+		
+		
+		
+		#print "Found stats line: min=$min, max=$max, avg=$avg\n";
+
+		printchart($reps,$command,$tag,$min,$max,$avg,$adjavg,$rest);
+		
+		#print "Found stats line: min=$min, max=$max, avg=$avg\n";
+	}
+	
+
+}
+
+sub getNumRest{
+	my ($rest)=(@_);
+	my @unknownArgs=(split /\s+/,$rest);
+	foreach $arg (@unknownArgs){
+		$numRest+=1;
+	}
+}
+
+sub printchart{
+
+	my ($reps,$command,$tag,$min,$max,$avg,$adjavg,$rest)=(@_);
+	
+	my @unknownArgs=(split /\s+/,$rest);
+	
+	
+#	print "$reps\t$command\t$tag\t$min\t$max\t$avg\t$adjavg";
+	print "$reps\t$command\t$tag\t$min\t$max\t$avg";
+	
+	foreach $arg (@unknownArgs){
+		print "\t$arg";
+	}
+	
+	print "\n";
+	
+}
+
+
+sub printheader{
+	my ($numRest)=(@_);
+
+	print "Reps\tCommand\tTag\tMin\tMax\tAvg";
+
+	for($count=0; $count<$numRest; $count++){
+		print "\t ";
+	}
+	print "\n";
+}
+
