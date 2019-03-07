@@ -14,12 +14,14 @@ public class Getter{
 
 
   public void getSubBlock(ISBound sub_block_space, ISBound block_dimension){
-    int number_of_threads = 4;
+    int number_of_threads = 1;
     int total_row = 0;
     int total_col = 0;
     int block_dim_row = block_dimension.get_sBound();
     int block_dim_col = block_dimension.get_eBound();
     float sum = 0;
+    long endTime = 0;
+    long startTime = System.currentTimeMillis();
     for(ScreeningNode temp_screening_node : Driver.screeningArray){
       HashMap<String, ISBound> blocks_to_get = new HashMap<>();
       blocks_to_get.putAll(Driver.lookupTable.get(temp_screening_node.getHash()).getSubBlock(sub_block_space, new ISBound(4,4)));
@@ -29,32 +31,18 @@ public class Getter{
       ArrayList<float[]> floats = new ArrayList<>();
       for(int i = sBound.get_sBound(); i <= eBound.get_sBound(); i++){
         for(int j = sBound.get_eBound() ; j <= eBound.get_eBound(); j++){
-          System.out.println(i+", "+j);
           ISBound key = new ISBound(i,j);
           if(SubBlockTask.arrayMap.containsKey(key)){
-            // System.out.println("FOUND");
             floats.add(SubBlockTask.arrayMap.get(key));
           }else{
             System.out.println(key.toString()+" does not exists");
           }
         }
       }
-
-      if(SubBlockTask.arrayMap.containsKey(new ISBound(6,6))){
-        System.out.println("FOUND");
-          // printArray(SubBlockTask.arrayMap.get(new ISBound(i,j)));
-      }else{
-        System.out.println(new ISBound(6, 6).toString()+" does not exists");
-      }
-
-      // for(float[] arr : floats){
-      //   printArray(arr, block_dim_row);
-      // }
-
       total_col = eBound.get_eBound() - sBound.get_eBound() + 1;
       total_row = eBound.get_sBound() - sBound.get_sBound() + 1;
 
-      System.out.println("total rows : "+total_row * block_dim_row +" total Cols : "+total_col * block_dim_col);
+      // System.out.println("total rows : "+total_row * block_dim_row +" total Cols : "+total_col * block_dim_col);
       RegularCompositeDataBlock rb = new RegularCompositeDataBlock(new ISBound(total_row, total_col), new ISBound(block_dim_row,block_dim_col), floats);
       sum = 0;
       for(int i = 0; i < total_row*block_dim_row; i++){
@@ -71,8 +59,14 @@ public class Getter{
     Iterator<String> itr = Driver.resultTable.keySet().iterator();
     while (itr.hasNext()) {
       String hash = itr.next();
-      System.out.println("Total For : " + Driver.resultTable.get(hash)+" : " + sum);
+      System.out.println("Total For : " + hash + " is : " + Driver.resultTable.get(hash));
     }
+
+    endTime = System.currentTimeMillis();
+    long timeneeded =  ((endTime - startTime) /1000);
+    System.out.println("\n\nTime taken : "+timeneeded);
+
+
   }
 
 
@@ -104,6 +98,7 @@ public class Getter{
     pool.shutdown();
     try {
       pool.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+      System.out.println("All threads done");
     } catch (InterruptedException e) {
         e.printStackTrace();
     }

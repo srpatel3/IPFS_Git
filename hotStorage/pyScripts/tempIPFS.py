@@ -67,7 +67,8 @@ def main():
     global block_number
     slicePath = "/home/sbot/dataDir/hotStorage/SLICE_"
     dagFile = "/home/sbot/dataDir/DAG/dag_"
-    for i in range(0,1):
+    blocks = int(raw_input("Blocks to add : "))
+    for i in range(0,blocks):
         block_number = 0
         tempPath = slicePath+str(i)
         tempDag = dagFile+str(i)+".json"

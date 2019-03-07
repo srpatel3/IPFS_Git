@@ -9,6 +9,9 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.*;
 import java.util.Iterator;
+import java.io.BufferedReader;
+import java.io.FileReader;
+
 
 public class Driver{
 
@@ -23,13 +26,13 @@ public class Driver{
   public static HashMap<String, Float> resultTable = new HashMap<String, Float>();
 
   public static void main(String[] Args) throws IOException{
-    System.out.println("In Main method");
-    System.out.println("Now Starting Thread");
+    // System.out.println("In Main method");
+    // System.out.println("Now Starting Thread");
     genDag();
     // Make sure to uncomment this lines as this will get us the list of dag
-    RemoteConnector RMC = new RemoteConnector();
-    Thread connector = new Thread(RMC);
-    connector.start();
+    // RemoteConnector RMC = new RemoteConnector();
+    // Thread connector = new Thread(RMC);
+    // connector.start();
     Scanner inFromKey = new Scanner(System.in);
     int input = 0;
     // genDag();
@@ -41,9 +44,10 @@ public class Driver{
       int sInput = inFromKey.nextInt();
       ISBound Bounds = new ISBound(fInput, sInput);
       Getter getterObject = new Getter();
+      getterObject.getSubBlock(Bounds, new ISBound(1000,1000));
       System.out.println("What do you want to do?");
       input = inFromKey.nextInt();
-      getterObject.getSubBlock(Bounds, new ISBound(1000,1000));
+
     }
     System.exit(0);
 
@@ -116,13 +120,18 @@ public class Driver{
         //   System.out.println(e);
         // }
 
-    String fileName = "/home/sbot/dataDir/DAG/dagList";
-    try (BufferedReader br = new BufferedReader(new FileReader("dagList"))) {
-    	   String line;
-    	   while ((line = br.readLine()) != null) {
-           System.out.println("Sending file name to server: "+line);
-    		}
-        updateInformation(new String(res).trim(), "HASH");
+    String fileName = "/home/sbot/dataDir/dagHashes/dagList";
+    IPFSConnector ipfsCon = new IPFSConnector();
+    try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
+          String line;
+    	    while ((line = br.readLine()) != null) {
+            // System.out.println("Getting DAG : "+line);
+            updateInformation(new String(ipfsCon.getDag(line)).trim(), line);
+	        }
+
+          // for(ScreeningNode sc_node : screeningArray){
+          //   System.out.println(sc_node.toString());
+          // }
     }
     catch(FileNotFoundException e){
       e.printStackTrace();

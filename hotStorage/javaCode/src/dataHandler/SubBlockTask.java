@@ -25,9 +25,8 @@ public class SubBlockTask implements Runnable{
         int numFloats = fbuf.limit();
         float [] floats = new float[numFloats];
         fbuf.get(floats);
+        // System.out.println(this.bounds.toString()+" Added");
         arrayMap.put(this.bounds, floats);
-
-
         // System.out.println("Length of float Array is : " + numFloats);
         // double sum = 0;
         // for(int i=0; i<numFloats; i++){

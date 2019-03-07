@@ -50,7 +50,7 @@ public class IPFSConnector{
 
   public String getDag(String hash) throws IOException{
     Cid genHash = Cid.decode(hash);
-    System.out.println(genHash);
+    // System.out.println(genHash);
     byte[] res = ipfs.dag.get(genHash);
     return new String(res).trim();
   }
