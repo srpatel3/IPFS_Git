@@ -9,31 +9,26 @@ public class SubBlockTask implements Runnable{
   private String hash;
   private IPFSConnector ipfs_con;
   private ISBound bounds;
-  public static  HashMap<ISBound, float[]> arrayMap = new HashMap<ISBound, float[]>();
-  public SubBlockTask(String hash, ISBound bounds){
+  
+  public SubBlockTask(String hash){
     this.hash = hash;
     this.ipfs_con = new IPFSConnector();
-    this.bounds = bounds;
+    // this.bounds = bounds;
+    this.bounds = null;
   }
 
   public void run(){
     try{
 
         byte[] data = ipfs_con.getFile(this.hash);
+        // System.out.println(this.hash);
         ByteBuffer buf = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN);
         FloatBuffer fbuf = buf.asFloatBuffer();
         int numFloats = fbuf.limit();
         float [] floats = new float[numFloats];
         fbuf.get(floats);
         // System.out.println(this.bounds.toString()+" Added");
-        arrayMap.put(this.bounds, floats);
-        // System.out.println("Length of float Array is : " + numFloats);
-        // double sum = 0;
-        // for(int i=0; i<numFloats; i++){
-        //   System.out.println(floats[i]);
-        // }
-
-      // Driver.resultTable.put(this.hash, sum);
+        ProcessingThread.arrayMap.put(this.hash, floats);
     }
     catch(IOException e){
       e.printStackTrace();

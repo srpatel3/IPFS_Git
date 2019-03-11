@@ -52,7 +52,7 @@ public class DataSlice{
       return row * this.dataSliceDimension + col;
   }
 
-  public HashMap<String, ISBound> getSubBlock(ISBound sub_block_dimension, ISBound block_space_dimension){
+  public ArrayList<String> getSubBlock(String key_hash, ISBound sub_block_dimension, ISBound block_space_dimension){
     int sIndex = sub_block_dimension.get_sBound();
     int eIndex = sub_block_dimension.get_eBound();
     int row_dimension = block_space_dimension.get_sBound();
@@ -68,7 +68,6 @@ public class DataSlice{
 
 
     ArrayList<String> hashesToGet = new ArrayList<>();
-    HashMap<String, ISBound> hash_to_ISB = new HashMap<>();
     for(int i = starting_row ; i <= ending_row ; i++){
       for(int j = starting_col; j<= ending_col; j++){
           int datasection_index = getDataSectionIndex(i / this.dataSliceDimension, j / this.dataSliceDimension);
@@ -76,15 +75,52 @@ public class DataSlice{
           // System.out.println("Cordinates are : "+i+","+j +" from " + datasection_index);
           if(this.dataSectionList[datasection_index] != null){
             // hashesToGet.add(this.dataSectionList[datasection_index].getBlocks(i,j));
-              hash_to_ISB.put(this.dataSectionList[datasection_index].getBlocks(i,j),new ISBound(i,j));
+              hashesToGet.add(this.dataSectionList[datasection_index].getBlocks(i,j));
+              // System.out.println(this.dataSectionList[datasection_index].getBlocks(i,j));
           }
       }
     }
-    hash_to_ISB.put("starting_bound",new ISBound(starting_row, starting_col));
-    hash_to_ISB.put("ending_bound", new ISBound(ending_row, ending_col));
 
-    return hash_to_ISB;
+    ProcessingThread.blocks_to_get.put(key_hash+"starting_bound",new ISBound(starting_row, starting_col));
+    ProcessingThread.blocks_to_get.put(key_hash+"ending_bound", new ISBound(ending_row, ending_col));
+
+    return hashesToGet;
   }
+
+
+  // public HashMap<String, ISBound> getSubBlock(ISBound sub_block_dimension, ISBound block_space_dimension){
+  //   int sIndex = sub_block_dimension.get_sBound();
+  //   int eIndex = sub_block_dimension.get_eBound();
+  //   int row_dimension = block_space_dimension.get_sBound();
+  //   int col_dimension = block_space_dimension.get_eBound();
+  //   int sRow = sIndex / row_dimension;
+  //   int sCol = sIndex % row_dimension;
+  //   int eRow = eIndex / row_dimension;
+  //   int eCol = eIndex % row_dimension;
+  //   int starting_row = Math.min(sRow,eRow);
+  //   int ending_row = Math.max(sRow, eRow);
+  //   int starting_col = Math.min(sCol, eCol);
+  //   int ending_col = Math.max(sCol, eCol);
+
+
+  //   ArrayList<String> hashesToGet = new ArrayList<>();
+  //   HashMap<String, ISBound> hash_to_ISB = new HashMap<>();
+  //   for(int i = starting_row ; i <= ending_row ; i++){
+  //     for(int j = starting_col; j<= ending_col; j++){
+  //         int datasection_index = getDataSectionIndex(i / this.dataSliceDimension, j / this.dataSliceDimension);
+  //         // System.out.println(datasection_index);
+  //         // System.out.println("Cordinates are : "+i+","+j +" from " + datasection_index);
+  //         if(this.dataSectionList[datasection_index] != null){
+  //           // hashesToGet.add(this.dataSectionList[datasection_index].getBlocks(i,j));
+  //             hash_to_ISB.put(this.dataSectionList[datasection_index].getBlocks(i,j),new ISBound(i,j));
+  //         }
+  //     }
+  //   }
+  //   hash_to_ISB.put("starting_bound",new ISBound(starting_row, starting_col));
+  //   hash_to_ISB.put("ending_bound", new ISBound(ending_row, ending_col));
+
+  //   return hash_to_ISB;
+  // }
 
   public String getHash(){
 	return this.path;
